@@ -7,15 +7,16 @@ b = gets.to_f
 print "c: "
 c = gets.to_f
 
-discriminant = (b**2 - 4*a*c)
+discriminant = b**2 - 4 * a * c
 
 if discriminant > 0
-	x1 = (-b + Math.sqrt(discriminant))/(2*a)
-	x2 = (-b - Math.sqrt(discriminant))/(2*a)
-	puts "Дискриминант (D= #{discriminant}) больше нуля, значит уравнение имеет два корня: х1=" + x1.to_s + " и х2 =" + x2.to_s
+  discriminant_sqrt = Math.sqrt(discriminant)
+	x1 = (-b + discriminant_sqrt)/(2 * a)
+	x2 = (-b - discriminant_sqrt)/(2 * a)
+	puts "Дискриминант (D = #{discriminant}) больше нуля, значит уравнение имеет два корня: х1= #{x1}  и х2 = #{x2}"
 elsif discriminant == 0
-	puts "Дискриминант равен нулю, значит уравнение имеет один корень: #{(-b)/(2*a)}"
+  x = (-b)/(2 * a)
+	puts "Дискриминант равен нулю, значит уравнение имеет один корень: #{x}"
 else 
 	puts "Дискриминант (D= #{discriminant}) меньше нуля, значит уравнение не имеет действительных корней"
-end
-			
+end		
