@@ -21,7 +21,7 @@ rectangular = sides[2]**2 == sides[0]**2 + sides[1]**2
 if  rectangular && sides[0] == sides[1]
   puts "Треугольник прямоугольный и равнобедренный"
 elsif rectangular
-  puts "Треугольник прямоугольный" 
+  puts "Треугольник прямоугольный"
 else
   puts "Треугольник не прямоугольный."
 end

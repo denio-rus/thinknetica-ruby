@@ -17,6 +17,6 @@ if discriminant > 0
 elsif discriminant == 0
   x = -b / (2 * a)
   puts "Дискриминант равен нулю, значит уравнение имеет один корень: #{x}"
-else 
+else
   puts "Дискриминант (D= #{discriminant}) меньше нуля, значит уравнение не имеет действительных корней"
-end		
+end
