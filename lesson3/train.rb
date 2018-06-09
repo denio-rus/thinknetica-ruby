@@ -23,7 +23,7 @@ class Route
   def initialize(departure_point, destination_point)
     @departure_point = departure_point
     @destination_point = destination_point
-    @stations = [@departure_point, destination_point]
+    @stations = [@departure_point, @destination_point]
   end
 
   def add_waypoint(new_waypoint)
