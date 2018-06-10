@@ -1,5 +1,6 @@
 class Station
   attr_reader :trains, :name
+
   def initialize(name)
     @name = name
     @trains = []
@@ -20,33 +21,39 @@ end
 
 class Route
   attr_reader :stations
+
   def initialize(departure_point, destination_point)
-    @departure_point = departure_point
-    @destination_point = destination_point
-    @stations = [@departure_point, @destination_point]
+    @stations = [departure_point, destination_point]
   end
 
-  def add_waypoint(new_waypoint)
-    @stations.insert(-2, new_waypoint)
+  def departure
+    @stations.first
   end
 
-  def remove_waypoint(unnecesary_point)
-    if unnecesary_point != @departure_point && unnecesary_point != @destination_point
-      @stations.delete(unnecesary_point)
+  def destination
+    @stations.last
+  end
+
+  def add(station)
+    @stations.insert(-2, station)
+  end
+
+  def remove(station)
+    unless [departure, destination].include?(station)
+      @stations.delete(station)
     else
       puts "Эту станцию нельзя удалить из маршрута"
     end
   end
 
-  def order
+  def list_stations
     @stations.each { |station| puts station.name }
   end
-
 end
-
 
 class Train
   attr_reader :type, :wagons, :speed
+
   def initialize(id, type, wagons)
     @id = id
     @type = type
@@ -84,26 +91,26 @@ class Train
   def take_route(route)
     @route = route
     @current_station_index = 0
-    route.stations.first.train_arrive(self)
+    @route.stations.first.train_arrive(self)
   end
 
   def move_next
-    if @current_station_index == @route.stations.size - 1
-      puts "Это конечная станция."
-    else
-      @route.stations[@current_station_index].train_departure(self)
+    if next_station
+      current_station.train_departure(self)
+      next_station.train_arrive(self)
       @current_station_index += 1
-      @route.stations[@current_station_index].train_arrive(self)
+    else
+      puts "Это конечная станция."
     end
   end
 
   def move_back
-    if @current_station_index == 0
-      puts "Это начальная станция маршрута."
-    else
-      @route.stations[@current_station_index].train_departure(self)
+    if previous_station
+      current_station.train_departure(self)
+      previous_station.train_arrive(self)
       @current_station_index -= 1
-      @route.stations[@current_station_index].train_arrive(self)
+    else
+      puts "Это начальная станция маршрута."
     end
   end
 
@@ -113,7 +120,7 @@ class Train
 
   def next_station
     if @current_station_index == @route.stations.size - 1
-      @route.stations[@current_station_index]
+      return nil
     else
       @route.stations[@current_station_index + 1]
     end
@@ -121,10 +128,9 @@ class Train
 
   def previous_station
     if @current_station_index == 0
-      @route.stations[@current_station_index]
+      return nil
     else
       @route.stations[@current_station_index - 1]
     end
   end
-
 end
