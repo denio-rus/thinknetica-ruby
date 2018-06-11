@@ -39,10 +39,10 @@ class Route
   end
 
   def remove(station)
-    unless [departure, destination].include?(station)
-      @stations.delete(station)
-    else
+    if [departure, destination].include?(station)
       puts "Эту станцию нельзя удалить из маршрута"
+    else
+      @stations.delete(station)
     end
   end
 
@@ -119,18 +119,10 @@ class Train
   end
 
   def next_station
-    if @current_station_index == @route.stations.size - 1
-      return nil
-    else
-      @route.stations[@current_station_index + 1]
-    end
+    @route.stations[@current_station_index + 1] if @current_station_index != @route.stations.size - 1
   end
 
   def previous_station
-    if @current_station_index == 0
-      return nil
-    else
-      @route.stations[@current_station_index - 1]
-    end
+    @route.stations[@current_station_index - 1] if @current_station_index != 0
   end
 end
