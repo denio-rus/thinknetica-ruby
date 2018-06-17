@@ -1,9 +1,8 @@
 class Train
-  attr_reader :type, :wagons, :speed
+  attr_reader :speed, :id
 
-  def initialize(id, type)
+  def initialize(id)
     @id = id
-    @type = type
     @wagons = []
     @speed = 0
   end
@@ -25,9 +24,9 @@ class Train
     end
   end
 
-  def wagon_remove(wagon)
+  def wagon_remove
     if speed == 0 && @wagons.any?
-      @wagons.delete(wagon)
+      @wagons.pop
     elsif speed != 0
       puts "Поезд в движении, операция невозможна."
     else
@@ -42,6 +41,11 @@ class Train
   end
 
   def move_next
+    until @route
+      puts "Маршрут не задан"
+      return
+    end
+
     if next_station
       current_station.train_departure(self)
       next_station.train_arrive(self)
@@ -52,6 +56,11 @@ class Train
   end
 
   def move_back
+    until @route
+      puts "Маршрут не задан"
+      return
+    end
+
     if previous_station
       current_station.train_departure(self)
       previous_station.train_arrive(self)

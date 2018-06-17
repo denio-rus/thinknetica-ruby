@@ -1,7 +1,8 @@
 class Route
-  attr_reader :stations
+  attr_reader :stations, :id
 
-  def initialize(departure_point, destination_point)
+  def initialize(id, departure_point, destination_point)
+    @id = id
     @stations = [departure_point, destination_point]
   end
 
@@ -18,7 +19,8 @@ class Route
   end
 
   def list_stations
-    @stations.each { |station| puts station.name }
+    @stations.each { |station| print "#{station.name} " }
+    print"\n"
   end
 
   private

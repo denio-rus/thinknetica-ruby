@@ -1,4 +1,4 @@
-class CargoTrain < Train
+class PassengerTrain < Train
 
   def wagon_add(wagon)
     if wagon.instance_of?(PassengerWagon)

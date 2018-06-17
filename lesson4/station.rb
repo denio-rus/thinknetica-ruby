@@ -7,7 +7,8 @@ class Station
   end
 
   def trains_by_type(type)
-    @trains.count { |train| train.type == type }
+    @trains.count { |train| train.instance_of?(CargoTrain) } if type == "cargo"
+    @trains.count { |train| train.instance_of?(CargoTrain) } if type == "passenger"
   end
 
   def train_arrive(train)
