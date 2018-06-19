@@ -3,6 +3,7 @@ class Interface
     @stations = []
     @routes = []
     @trains = []
+    @wagons = []
   end
 
   def main_menu
@@ -193,6 +194,20 @@ private
     end
   end
 
+  def new_wagon(id)
+    puts "Выберите тип вагона (1 - cargo, 2 - passenger): "
+    input = gets.to_i
+    if input == 1
+      @wagons << wagon = CargoWagon.new(id)
+      wagon
+    elsif input == 2
+      @wagons << wagon = PassengerWagon.new(id)
+      wagon
+    else
+      puts "Нет такого варианта"
+    end
+  end
+
   def add_station
     return until route = check_route
     return until station = check_station
@@ -219,6 +234,7 @@ private
     @routes.each do |route|
       puts "Идентификатор маршрута: #{route.id} "
       route.list_stations
+      puts "\n"
     end
   end
 
@@ -230,17 +246,36 @@ private
 
   def add_wagon
     return until train  = check_train
-
-    if train.instance_of?(CargoTrain)
-      train.wagon_add(CargoWagon.new)
+    print "Введите идентификатор вагона: "
+    id = gets.chomp
+    wagon = check_wagon(id)
+    wagon = new_wagon(id) until wagon
+    if wagon.status == "in use"
+      puts "Вагон используется в текущий момент"
+      return
     else
-      train.wagon_add(PassengerWagon.new)
+      train.wagon_add(wagon)
     end
+    wagon.status = "in use" if train.involve?(wagon)
   end
 
   def remove_wagon
     train = check_train
-    train.wagon_remove if train
+    until train
+      puts "Нет такого поезда"
+      return
+    end
+
+    print "Введите идентификатор вагона: "
+    id = gets.chomp
+    wagon = check_wagon(id)
+    until train.involve?(wagon)
+      puts "Поезд не содержит данный вагон"
+      return
+    end
+
+    train.wagon_remove(wagon)
+    wagon.status ="free"
   end
 
   def move_next
@@ -284,6 +319,11 @@ private
     else
       puts "Указан несуществующий идентификатор"
     end
+  end
+
+  def check_wagon(id)
+    verify = @wagons.index { |wagon| wagon.id == id }
+    @wagons[verify] if verify
   end
 
   def show_stations

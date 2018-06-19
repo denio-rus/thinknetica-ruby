@@ -20,12 +20,9 @@ class Route
 
   def list_stations
     @stations.each { |station| print "#{station.name} " }
-    print"\n"
   end
 
-  private
-# эти методы используются только внутри объекта, то есть не являются интерфейсом.
-    def departure
+  def departure
     @stations.first
   end
 

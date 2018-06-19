@@ -1,5 +1,5 @@
 class Train
-  attr_reader :speed, :id
+  attr_reader :speed, :id, :type, :wagons
 
   def initialize(id)
     @id = id
@@ -17,16 +17,18 @@ class Train
   end
 
   def wagon_add(wagon)
+    return "Тип вагона не соответствует поезду" until self.type == wagon.type
+
     if speed == 0
       @wagons << wagon
     else
-      puts "Поезд в движении, операция невозможна."
+      "Поезд в движении, операция невозможна."
     end
   end
 
-  def wagon_remove
-    if speed == 0 && @wagons.any?
-      @wagons.pop
+  def wagon_remove(wagon)
+    if speed == 0 && @wagons.include?(wagon)
+      @wagons.delete(wagon)
     elsif speed != 0
       puts "Поезд в движении, операция невозможна."
     else
@@ -70,8 +72,10 @@ class Train
     end
   end
 
-  private
-#для следующих трех методов: Это не интерфейс, используется для работы других методов объекта, переопределять нет необходимости.
+  def involve?(wagon)
+    @wagons.include?(wagon)
+  end
+
   def current_station
     @route.stations[@current_station_index]
   end

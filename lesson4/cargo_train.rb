@@ -1,5 +1,10 @@
 class CargoTrain < Train
 
+  def initialize(id)
+    @type = "cargo"
+    super
+  end
+
   def wagon_add(wagon)
     if wagon.instance_of?(CargoWagon)
       super
