@@ -1,7 +1,5 @@
 class CargoWagon < Wagon
-
-  def initialize(id)
-    @type = "cargo"
-    super
+  def type
+    "cargo"
   end
 end

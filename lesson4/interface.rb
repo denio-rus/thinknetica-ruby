@@ -28,6 +28,14 @@ class Interface
         menu_train
       when 4
         menu_station
+      when 5
+        p @stations
+      when 6
+        p @trains
+      when 7
+        p @routes
+      when 8
+        p @wagons
       else
         puts "Нет такого варианта"
       end
@@ -199,10 +207,8 @@ private
     input = gets.to_i
     if input == 1
       @wagons << wagon = CargoWagon.new(id)
-      wagon
     elsif input == 2
-      @wagons << wagon = PassengerWagon.new(id)
-      wagon
+      @wagons << PassengerWagon.new(id)
     else
       puts "Нет такого варианта"
     end
@@ -245,18 +251,21 @@ private
   end
 
   def add_wagon
-    return until train  = check_train
+    return until train = check_train
     print "Введите идентификатор вагона: "
     id = gets.chomp
     wagon = check_wagon(id)
-    wagon = new_wagon(id) until wagon
+    until wagon
+      new_wagon(id)
+      wagon = @wagons.last
+    end
     if wagon.status == "in use"
       puts "Вагон используется в текущий момент"
       return
     else
       train.wagon_add(wagon)
     end
-    wagon.status = "in use" if train.involve?(wagon)
+    wagon.set_in_use if train.involve?(wagon)
   end
 
   def remove_wagon
@@ -275,7 +284,7 @@ private
     end
 
     train.wagon_remove(wagon)
-    wagon.status ="free"
+    wagon.set_free
   end
 
   def move_next

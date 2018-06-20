@@ -10,6 +10,3 @@ require_relative "interface"
 
 railway = Interface.new
 railway.start
-
-
-

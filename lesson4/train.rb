@@ -17,12 +17,14 @@ class Train
   end
 
   def wagon_add(wagon)
-    return "Тип вагона не соответствует поезду" until self.type == wagon.type
-
+    until self.type == wagon.type
+      puts "Тип вагона не соответствует поезду"
+      return
+    end
     if speed == 0
       @wagons << wagon
     else
-      "Поезд в движении, операция невозможна."
+      puts "Поезд в движении, операция невозможна."
     end
   end
 

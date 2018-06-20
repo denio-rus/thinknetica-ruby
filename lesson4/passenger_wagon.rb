@@ -1,7 +1,5 @@
 class PassengerWagon < Wagon
-
-  def initialize(id)
-    @type = "passenger"
-    super
+  def type
+    "passenger"
   end
 end
