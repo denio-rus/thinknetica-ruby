@@ -37,7 +37,7 @@ class Interface
       when 8
         p @wagons
       else
-        puts "Нет такого варианта"
+        Message.wrong_choise
       end
     end
   end
@@ -72,7 +72,7 @@ private
       when 4
         new_passenger_train
       else
-        puts "Нет такого варианта"
+        Message.wrong_choise
       end
     end
   end
@@ -100,7 +100,7 @@ private
       when 4
         show_routes
       else
-        puts "Нет такого варианта"
+        Message.wrong_choise
       end
     end
   end
@@ -128,7 +128,7 @@ private
       when 4
         move_back
       else
-        puts "Нет такого варианта"
+        Message.wrong_choise
       end
     end
   end
@@ -150,26 +150,24 @@ private
       when 2
         list_train
       else
-        puts "Нет такого варианта"
+        Message.wrong_choise
       end
     end
   end
 
   def new_station
-    print "Введите название новой станции: "
-    name = gets.chomp.capitalize
+    name = Message.request_station_name
     if @stations.index { |station| station.name == name }
-      puts "Это название уже используется"
+      Message.station_name_busy
     else
       @stations << Station.new(name)
     end
   end
 
   def new_route
-    print "Введите идентификатор маршрута: "
-    id = gets.chomp
+    id = Message.request_route_id
     if @routes.index { |route| route.id == id }
-      puts "Идентификатор уже используется"
+      Message.id_busy
       return
     end
 
@@ -183,34 +181,31 @@ private
   end
 
   def new_cargo_train
-    print "Введите идентификатор поезда: "
-    id = gets.chomp
+    id = Message.request_train_id
     if @trains.index { |train| train.id == id }
-      puts "Идентификатор уже используется"
+      Message.id_busy
     else
       @trains << CargoTrain.new(id)
     end
   end
 
   def new_passenger_train
-    print "Введите идентификатор поезда: "
-    id = gets.chomp
+    id = Message.request_train_id
     if @trains.index { |train| train.id == id }
-      puts "Идентификатор уже используется"
+      Message.id_busy
     else
       @trains << PassengerTrain.new(id)
     end
   end
 
   def new_wagon(id)
-    puts "Выберите тип вагона (1 - cargo, 2 - passenger): "
-    input = gets.to_i
+    input = Message.request_wagon_type
     if input == 1
-      @wagons << wagon = CargoWagon.new(id)
+      @wagons << CargoWagon.new(id)
     elsif input == 2
       @wagons << PassengerWagon.new(id)
     else
-      puts "Нет такого варианта"
+      Message.wrong_choise
     end
   end
 
@@ -221,7 +216,7 @@ private
     if !route.stations.include?(station)
       route.add(station)
     else
-      puts "Маршрут уже содержит данную станцию"
+      Message.route_operation_cancel("include")
     end
   end
 
@@ -232,16 +227,12 @@ private
     if route.stations.include?(station)
       route.remove(station)
     else
-      puts "Указанная станция не найдена в маршруте"
+      Message.route_operation_cancel("not include")
     end
   end
 
   def show_routes
-    @routes.each do |route|
-      puts "Идентификатор маршрута: #{route.id} "
-      route.list_stations
-      puts "\n"
-    end
+    Message.routes(@routes)
   end
 
   def set_route
@@ -252,39 +243,31 @@ private
 
   def add_wagon
     return until train = check_train
-    print "Введите идентификатор вагона: "
-    id = gets.chomp
+    id = Message.request_wagon_id
     wagon = check_wagon(id)
     until wagon
       new_wagon(id)
       wagon = @wagons.last
     end
     if wagon.status == "in use"
-      puts "Вагон используется в текущий момент"
+      Message.wagon_operation_cancel("in use")
       return
     else
       train.wagon_add(wagon)
     end
-    wagon.set_in_use if train.involve?(wagon)
   end
 
   def remove_wagon
     train = check_train
     until train
-      puts "Нет такого поезда"
+      Message.wrong_id
       return
     end
 
-    print "Введите идентификатор вагона: "
-    id = gets.chomp
+    id = Message.request_wagon_id
     wagon = check_wagon(id)
-    until train.involve?(wagon)
-      puts "Поезд не содержит данный вагон"
-      return
-    end
 
     train.wagon_remove(wagon)
-    wagon.set_free
   end
 
   def move_next
@@ -298,35 +281,32 @@ private
   end
 
   def check_train
-    print "Введите идентификатор поезда: "
-    id = gets.chomp
+    id = Message.request_train_id
     verify = @trains.index { |train| train.id == id }
     if verify
       @trains[verify]
     else
-      puts "Введен несуществующий идентификатор"
+      Message.wrong_id
     end
   end
 
   def check_station
-    print "Введите название станции: "
-    name = gets.chomp.capitalize
+    name = Message.request_station_name
     verify = @stations.index { |station| station.name == name }
     if verify
       @stations[verify]
     else
-      puts "Введена несуществующая станция"
+      Message.wrong_station_name
     end
   end
 
   def check_route
-    print "Укажите идентификатор маршрута: "
-    id = gets.chomp
+    id = Message.request_route_id
     verify = @routes.index { |route| route.id == id }
     if verify
       @routes[verify]
     else
-      puts "Указан несуществующий идентификатор"
+      Message.wrong_id
     end
   end
 
@@ -336,11 +316,11 @@ private
   end
 
   def show_stations
-    @stations.each { |station| puts station.name }
+    Message.list_stations(@stations)
   end
 
   def list_train
     station = check_station
-    puts station.trains if station
+    Message.trains_at(station) if station
   end
 end

@@ -17,24 +17,22 @@ class Train
   end
 
   def wagon_add(wagon)
-    until self.type == wagon.type
-      puts "Тип вагона не соответствует поезду"
-      return
-    end
     if speed == 0
       @wagons << wagon
+      wagon.set_in_use
     else
-      puts "Поезд в движении, операция невозможна."
+      Message.wagon_operation_cancel("moving")
     end
   end
 
   def wagon_remove(wagon)
     if speed == 0 && @wagons.include?(wagon)
       @wagons.delete(wagon)
+      wagon.set_free
     elsif speed != 0
-      puts "Поезд в движении, операция невозможна."
+      Message.wagon_operation_cancel("moving")
     else
-      puts "Нет вагонов для отцепки"
+      Message.wagon_operation_cancel("absence")
     end
   end
 
@@ -46,7 +44,7 @@ class Train
 
   def move_next
     until @route
-      puts "Маршрут не задан"
+      Message.route_operation_cancel("absence")
       return
     end
 
@@ -55,13 +53,13 @@ class Train
       next_station.train_arrive(self)
       @current_station_index += 1
     else
-      puts "Это конечная станция."
+      Message.route_operation_cancel("destination")
     end
   end
 
   def move_back
     until @route
-      puts "Маршрут не задан"
+      Message.route_operation_cancel("absence")
       return
     end
 
@@ -70,12 +68,8 @@ class Train
       previous_station.train_arrive(self)
       @current_station_index -= 1
     else
-      puts "Это начальная станция маршрута."
+      Message.route_operation_cancel("departure")
     end
-  end
-
-  def involve?(wagon)
-    @wagons.include?(wagon)
   end
 
   def current_station
