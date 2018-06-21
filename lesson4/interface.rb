@@ -28,14 +28,6 @@ class Interface
         menu_train
       when 4
         menu_station
-      when 5
-        p @stations
-      when 6
-        p @trains
-      when 7
-        p @routes
-      when 8
-        p @wagons
       else
         Message.wrong_choise
       end
