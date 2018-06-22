@@ -31,7 +31,7 @@ class Interface
       when 4
         menu_station
       else
-        Message.wrong_choise
+        wrong_choise_message
       end
     end
   end
@@ -66,7 +66,7 @@ private
       when 4
         new_passenger_train
       else
-        Message.wrong_choise
+        wrong_choise_message
       end
     end
   end
@@ -94,7 +94,7 @@ private
       when 4
         show_routes
       else
-        Message.wrong_choise
+        wrong_choise_message
       end
     end
   end
@@ -152,8 +152,8 @@ private
   def new_station
     request_station_name_message
     name = gets.chomp.capitalize
-    if @stations.index { |station| station.name == name }
-     station_name_taken_message
+    if @stations.detect { |station| station.name == name }
+      station_name_taken_message
     else
       @stations << Station.new(name)
     end
@@ -162,24 +162,23 @@ private
   def new_route
     request_route_id_message
     id = gets.chomp
-    if @routes.index { |route| route.id == id }
-      id_taken_message
-      return
-    end
+    return id_taken_message if @routes.detect { |route| route.id == id }
 
     print "Ввод станции отправления. "
     departure = get_station
+    return wrong_station_name_message unless departure
 
     print "Ввод станции назначения. "
     destination = get_station
+    return wrong_station_name_message unless destination
 
-    @routes << Route.new(id, departure, destination) if departure && destination
+    @routes << Route.new(id, departure, destination)
   end
 
   def new_cargo_train
     request_train_id_message
     id = gets.chomp
-    if @trains.index { |train| train.id == id }
+    if @trains.detect { |train| train.id == id }
       id_taken_message
     else
       @trains << CargoTrain.new(id)
@@ -189,7 +188,7 @@ private
   def new_passenger_train
     request_train_id_message
     id = gets.chomp
-    if @trains.index { |train| train.id == id }
+    if @trains.detect { |train| train.id == id }
       id_taken_message
     else
       @trains << PassengerTrain.new(id)
@@ -209,26 +208,29 @@ private
   end
 
   def add_station
-    return unless route = get_route
-    return unless station = get_station
+    route = get_route
+    return wrong_id_message unless route
+    station = get_station
+    return wrong_station_name_message unless station
 
-    if !route.stations.include?(station)
-      route.add(station)
-    else
+    if route.involve?(station)
       route_operation_cancel_message("include")
+    else
+      route.add(station)
     end
   end
 
   def remove_station
-    return unless route = get_route
-    return unless station = get_station
+    route = get_route
+    return wrong_id_message  unless route
 
-    if route.stations.include?(station)
-      result = route.remove(station)
-      route_operation_cancel_message("can't delete") if result == "can't delete"
-    else
-      route_operation_cancel_message("not include")
-    end
+    station = get_station
+    return wrong_station_name_message unless station
+
+    return route_operation_cancel_message("not include") unless route.involve?(station)
+
+    result = route.remove(station)
+    route_operation_cancel_message("can't delete") if result == "can't delete"
   end
 
   def show_routes
@@ -236,14 +238,18 @@ private
   end
 
   def set_route
-    return unless route = get_route
+    route = get_route
+    return wrong_id_message unless route
+
     train = get_train
-    train.take_route(route) if train && route
+    return wrong_id_message unless train
+
+    train.take_route(route)
   end
 
   def add_wagon
     train = get_train
-    return unless train
+    return wrong_id_message unless train
 
     request_wagon_id_message
     id = gets.chomp
@@ -252,14 +258,12 @@ private
       new_wagon(id)
       wagon = @wagons.last
     end
-    if wagon.status == "in use"
-      wagon_operation_cancel_message("in use")
-      return
-    else
-      result = train.wagon_add(wagon)
-      wagon_operation_cancel_message("moving") if result == "moving"
-      wagon_operation_cancel_message("type") if result == "type"
-    end
+
+    return wagon_operation_cancel_message("in use") if wagon.status == "in use"
+
+    result = train.wagon_add(wagon)
+    wagon_operation_cancel_message("moving") if result == "moving"
+    wagon_operation_cancel_message("type") if result == "type"
   end
 
   def remove_wagon
@@ -269,6 +273,7 @@ private
     request_wagon_id_message
     id = gets.chomp
     wagon = get_wagon(id)
+    return wrong_id_message unless wagon
 
     result = train.wagon_remove(wagon)
     if result == "moving"
@@ -282,51 +287,43 @@ private
 
   def move_next
     train = get_train
-    train.move_next if train
+    return wrong_id_message unless train
 
-    route_operation_cancel_message("no route") if train.move_next == "no route"
-    route_operation_cancel_message("destination") if  train.move_next == "destination"
+    result = train.move_next
+
+    route_operation_cancel_message("no route") if result == "no route"
+    route_operation_cancel_message("destination") if  result == "destination"
   end
 
   def move_back
     train = get_train
-    train.move_back if train
+    return wrong_id_message unless train
 
-    route_operation_cancel_message("no route") if train.move_next == "no route"
-    route_operation_cancel_message("departure") if  train.move_next == "departure"
+    result = train.move_back
+
+    route_operation_cancel_message("no route") if result == "no route"
+    route_operation_cancel_message("departure") if result == "departure"
   end
 
   def get_train
     request_train_id_message
     id = gets.chomp
     verify = @trains.index { |train| train.id == id }
-    if verify
-      @trains[verify]
-    else
-      wrong_id_message
-    end
+    @trains[verify] if verify
   end
 
   def get_station
     request_station_name_message
     name = gets.chomp.capitalize
     verify = @stations.index { |station| station.name == name }
-    if verify
-      @stations[verify]
-    else
-      wrong_station_name_message
-    end
+    @stations[verify] if verify
   end
 
   def get_route
     request_route_id_message
     id = gets.chomp
     verify = @routes.index { |route| route.id == id }
-    if verify
-      @routes[verify]
-    else
-      wrong_id_message
-    end
+    @routes[verify] if verify
   end
 
   def get_wagon(id)

@@ -29,4 +29,8 @@ class Route
   def destination
     @stations.last
   end
+
+  def involve?(station)
+    stations.include?(station)
+  end
 end

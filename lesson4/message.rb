@@ -55,7 +55,7 @@ module Message
     when "moving"
       puts "Поезд в движении, операция невозможна."
     when "absence"
-      puts "Нет данного вагона"
+      puts "Данного вагона нет в составе"
     when "in use"
       puts "Вагон используется в текущий момент"
     end
