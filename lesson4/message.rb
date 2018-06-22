@@ -1,46 +1,42 @@
 module Message
 
-  def wrong_choise
+  def wrong_choise_message
     puts "Нет такого варианта"
   end
 
-  def id_busy
+  def id_taken_message
     puts "Идентификатор уже используется"
   end
 
-  def request_train_id
+  def request_train_id_message
     print "Введите идентификатор поезда: "
-    gets.chomp
   end
 
-  def request_wagon_id
+  def request_wagon_id_message
     print "Введите идентификатор вагона: "
-    gets.chomp
   end
 
-  def request_station_name
+  def request_station_name_message
     print "Введите название станции: "
-    gets.chomp.capitalize
   end
 
-  def request_route_id
+  def request_route_id_message
     print "Введите идентификатор маршрута: "
-    gets.chomp
   end
 
-  def wrong_id
+  def wrong_id_message
     puts "Введен несуществующий идентификатор"
   end
 
-  def wrong_station_name
+  def wrong_station_name_message
     puts "Введена несуществующая станция"
   end
 
-  def station_name_busy
+  def station_name_taken_message
     puts "Это название уже используется"
   end
 
-  def routes(routes)
+  def detalization(routes)
     routes.each do |route|
       puts "Идентификатор маршрута: #{route.id} "
       route.list_stations
@@ -48,12 +44,11 @@ module Message
     end
   end
 
-  def request_wagon_type
+  def request_wagon_type_message
     puts "Выберите тип вагона (1 - cargo, 2 - passenger): "
-    gets.to_i
   end
 
-   def wagon_operation_cancel(error)
+   def wagon_operation_cancel_message(error)
     case error
     when "type"
       puts "Тип вагона не соответствуют типу поезда"
@@ -66,9 +61,9 @@ module Message
     end
   end
 
-  def route_operation_cancel(error)
+  def route_operation_cancel_message(error)
     case error
-    when "absence"
+    when "no route"
       puts "Маршрут не задан"
     when "departure"
       puts "Это начальная станция"
@@ -78,7 +73,7 @@ module Message
       puts "Маршрут уже содержит данную станцию"
     when "not include"
       puts "Указанная станция не найдена в маршруте"
-    when "delete"
+    when "can't delete"
       puts "Эту станцию нельзя удалить из маршрута"
     end
   end

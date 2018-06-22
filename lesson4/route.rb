@@ -12,7 +12,7 @@ class Route
 
   def remove(station)
     if [departure, destination].include?(station)
-      Message.route_operation_cancel("delete")
+      "can't delete"
     else
       @stations.delete(station)
     end

@@ -8,7 +8,6 @@ require_relative "cargo_wagon"
 require_relative "passenger_wagon"
 require_relative "message"
 require_relative "interface"
-include Message
 
 railway = Interface.new
 railway.start

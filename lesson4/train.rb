@@ -21,7 +21,7 @@ class Train
       @wagons << wagon
       wagon.set_in_use
     else
-      Message.wagon_operation_cancel("moving")
+      "moving"
     end
   end
 
@@ -30,9 +30,9 @@ class Train
       @wagons.delete(wagon)
       wagon.set_free
     elsif speed != 0
-      Message.wagon_operation_cancel("moving")
+      "moving"
     else
-      Message.wagon_operation_cancel("absence")
+      "absence"
     end
   end
 
@@ -43,32 +43,27 @@ class Train
   end
 
   def move_next
-    until @route
-      Message.route_operation_cancel("absence")
-      return
-    end
+    return "no route" unless @route
 
     if next_station
       current_station.train_departure(self)
       next_station.train_arrive(self)
       @current_station_index += 1
     else
-      Message.route_operation_cancel("destination")
+      "destination"
     end
   end
 
   def move_back
-    until @route
-      Message.route_operation_cancel("absence")
-      return
-    end
+    return "no route" unless @route
+
 
     if previous_station
       current_station.train_departure(self)
       previous_station.train_arrive(self)
       @current_station_index -= 1
     else
-      Message.route_operation_cancel("departure")
+      "departure"
     end
   end
 

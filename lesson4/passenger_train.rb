@@ -7,7 +7,7 @@ class PassengerTrain < Train
     if wagon.instance_of?(PassengerWagon)
       super
     else
-      Message.wagon_operation_cancel("type")
+      "type"
     end
   end
 end
