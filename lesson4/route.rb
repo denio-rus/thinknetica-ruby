@@ -1,9 +1,19 @@
 class Route
+  include InstanceCounter
+
   attr_reader :stations, :id
+
+  @@routes = []
 
   def initialize(id, departure_point, destination_point)
     @id = id
     @stations = [departure_point, destination_point]
+    register_instance
+    @@routes << self
+  end
+
+  def self.all
+    @@routes
   end
 
   def add(station)
@@ -32,5 +42,9 @@ class Route
 
   def involve?(station)
     stations.include?(station)
+  end
+
+  def self.find(id)
+    @@routes.find {|route| route.id == id }
   end
 end

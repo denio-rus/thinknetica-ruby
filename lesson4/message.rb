@@ -36,8 +36,8 @@ module Message
     puts "Это название уже используется"
   end
 
-  def detalization(routes)
-    routes.each do |route|
+  def route_detalization_message
+    Route.all.each do |route|
       puts "Идентификатор маршрута: #{route.id} "
       route.list_stations
       puts "\n"
@@ -76,10 +76,6 @@ module Message
     when "can't delete"
       puts "Эту станцию нельзя удалить из маршрута"
     end
-  end
-
-  def list_stations(stations)
-    stations.each { |station| puts station.name }
   end
 
   def trains_at(station)

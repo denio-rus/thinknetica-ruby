@@ -1,13 +1,6 @@
 class Interface
   include Message
 
-  def initialize
-    @stations = []
-    @routes = []
-    @trains = []
-    @wagons = []
-  end
-
   def main_menu
     loop do
       puts "9. Выход из программы"
@@ -30,6 +23,8 @@ class Interface
         menu_train
       when 4
         menu_station
+      when 5
+
       else
         wrong_choise_message
       end
@@ -78,6 +73,7 @@ private
       puts "2. Удалить станцию из маршрута"
       puts "3. Назначить маршрут поезду"
       puts "4. Вывести имеющиеся маршруты"
+      puts "5. Вывести имеющиеся станции"
       print "Введите номер операции: "
 
       input = gets.to_i
@@ -93,6 +89,8 @@ private
         set_route
       when 4
         show_routes
+      when 5
+        show_stations
       else
         wrong_choise_message
       end
@@ -106,6 +104,7 @@ private
       puts "2. Отцепить вагон от поезда."
       puts "3. Движение поезда на следующую станцию маршрута."
       puts "4. Движение поезда на предыдущую станцию маршрута."
+      puts "5. Вывести существующие поезда на экран."
       print "Введите номер операции: "
 
       input = gets.to_i
@@ -121,6 +120,8 @@ private
         move_next
       when 4
         move_back
+      when 5
+        show_trains
       else
         wrong_choise_message
       end
@@ -152,17 +153,17 @@ private
   def new_station
     request_station_name_message
     name = gets.chomp.capitalize
-    if @stations.detect { |station| station.name == name }
+    if Station.find(name)
       station_name_taken_message
     else
-      @stations << Station.new(name)
+      Station.new(name)
     end
   end
 
   def new_route
     request_route_id_message
     id = gets.chomp
-    return id_taken_message if @routes.detect { |route| route.id == id }
+    return id_taken_message if Route.find(id)
 
     print "Ввод станции отправления. "
     departure = get_station
@@ -172,26 +173,26 @@ private
     destination = get_station
     return wrong_station_name_message unless destination
 
-    @routes << Route.new(id, departure, destination)
+    Route.new(id, departure, destination)
   end
 
   def new_cargo_train
     request_train_id_message
     id = gets.chomp
-    if @trains.detect { |train| train.id == id }
+    if Train.find(id)
       id_taken_message
     else
-      @trains << CargoTrain.new(id)
+      CargoTrain.new(id)
     end
   end
 
   def new_passenger_train
     request_train_id_message
     id = gets.chomp
-    if @trains.detect { |train| train.id == id }
+    if Train.find(id)
       id_taken_message
     else
-      @trains << PassengerTrain.new(id)
+      PassengerTrain.new(id)
     end
   end
 
@@ -199,9 +200,9 @@ private
     request_wagon_type_message
     input = gets.to_i
     if input == 1
-      @wagons << CargoWagon.new(id)
+      CargoWagon.new(id)
     elsif input == 2
-      @wagons << PassengerWagon.new(id)
+      PassengerWagon.new(id)
     else
       wrong_choise_message
     end
@@ -234,7 +235,11 @@ private
   end
 
   def show_routes
-    detalization(@routes)
+    route_detalization_message
+  end
+
+  def show_trains
+    Train.all.each { |train| puts "Поезд #{train.id} - тип #{train.type}" }
   end
 
   def set_route
@@ -255,8 +260,7 @@ private
     id = gets.chomp
     wagon = get_wagon(id)
     unless wagon
-      new_wagon(id)
-      wagon = @wagons.last
+      wagon = new_wagon(id)
     end
 
     return wagon_operation_cancel_message("in use") if wagon.status == "in use"
@@ -305,34 +309,30 @@ private
     route_operation_cancel_message("departure") if result == "departure"
   end
 
-  def get_train
-    request_train_id_message
-    id = gets.chomp
-    verify = @trains.index { |train| train.id == id }
-    @trains[verify] if verify
-  end
-
   def get_station
     request_station_name_message
     name = gets.chomp.capitalize
-    verify = @stations.index { |station| station.name == name }
-    @stations[verify] if verify
+    Station.find(name)
+  end
+
+  def get_train
+    request_train_id_message
+    id = gets.chomp
+    Train.find(id)
   end
 
   def get_route
     request_route_id_message
     id = gets.chomp
-    verify = @routes.index { |route| route.id == id }
-    @routes[verify] if verify
+    Route.find(id)
   end
 
   def get_wagon(id)
-    verify = @wagons.index { |wagon| wagon.id == id }
-    @wagons[verify] if verify
+    Wagon.find(id)
   end
 
   def show_stations
-    list_stations(@stations)
+    Station.all.each { |station| puts station.name }
   end
 
   def list_train

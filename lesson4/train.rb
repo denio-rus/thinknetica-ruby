@@ -1,10 +1,21 @@
 class Train
-  attr_reader :speed, :id, :type, :wagons
+  include Production
+  include InstanceCounter
+
+  attr_reader :speed, :id, :type, :wagons, :route
+
+  @@trains = []
 
   def initialize(id)
     @id = id
     @wagons = []
     @speed = 0
+    @@trains << self
+    register_instance
+  end
+
+  def self.all
+    @@trains
   end
 
   def decrease_speed(value)
@@ -14,6 +25,7 @@ class Train
 
   def increase_speed(value)
     @speed += value
+      @wagons << wagon
   end
 
   def wagon_add(wagon)
@@ -57,7 +69,6 @@ class Train
   def move_back
     return "no route" unless @route
 
-
     if previous_station
       current_station.train_departure(self)
       previous_station.train_arrive(self)
@@ -66,6 +77,11 @@ class Train
       "departure"
     end
   end
+
+  def self.find(id)
+    @@trains.find { |train| train.id == id }
+  end
+
 
   def current_station
     @route.stations[@current_station_index]
