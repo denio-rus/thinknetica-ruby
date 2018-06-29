@@ -3,12 +3,13 @@ class Station
 
   attr_reader :trains, :name
 
-  @@stations = []
+  @@stations = {}
+  @instances = 0
 
   def initialize(name)
     @name = name
     @trains = []
-    @@stations << self
+    @@stations[name] = self
     register_instance
   end
 
@@ -17,7 +18,7 @@ class Station
   end
 
   def self.find(name)
-    @@stations.find { |station| station.name == name }
+    @@stations[name]
   end
 
   def trains_by_type(type)

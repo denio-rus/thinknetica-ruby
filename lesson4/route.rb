@@ -3,13 +3,14 @@ class Route
 
   attr_reader :stations, :id
 
-  @@routes = []
+  @@routes = {}
+  @instances = 0
 
   def initialize(id, departure_point, destination_point)
     @id = id
     @stations = [departure_point, destination_point]
     register_instance
-    @@routes << self
+    @@routes[id] = self
   end
 
   def self.all
@@ -45,6 +46,6 @@ class Route
   end
 
   def self.find(id)
-    @@routes.find {|route| route.id == id }
+    @@routes[id]
   end
 end

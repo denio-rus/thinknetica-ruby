@@ -24,7 +24,7 @@ class Interface
       when 4
         menu_station
       when 5
-
+        puts Station.instances, Route.instances, Train.instances, CargoTrain.instances, PassengerTrain.instances
       else
         wrong_choise_message
       end
@@ -239,7 +239,7 @@ private
   end
 
   def show_trains
-    Train.all.each { |train| puts "Поезд #{train.id} - тип #{train.type}" }
+    Train.all.each_pair { |id, train| puts "Поезд #{id} - тип #{train.type}" }
   end
 
   def set_route
@@ -332,7 +332,7 @@ private
   end
 
   def show_stations
-    Station.all.each { |station| puts station.name }
+    Station.all.each_value { |station| puts station.name }
   end
 
   def list_train

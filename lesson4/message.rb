@@ -37,8 +37,8 @@ module Message
   end
 
   def route_detalization_message
-    Route.all.each do |route|
-      puts "Идентификатор маршрута: #{route.id} "
+    Route.all.each_pair do |id, route|
+      puts "Идентификатор маршрута: #{id} "
       route.list_stations
       puts "\n"
     end
@@ -79,6 +79,6 @@ module Message
   end
 
   def trains_at(station)
-     station.trains.each { |train| puts "Поезд #{train.id} - тип #{train.type}" }
+     station.trains.each { |train| puts "Поезд #{train.id} - тип #{train.type}"}
   end
 end

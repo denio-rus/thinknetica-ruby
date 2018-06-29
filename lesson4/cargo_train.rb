@@ -1,4 +1,6 @@
 class CargoTrain < Train
+  @instances = 0
+
   def type
     "cargo"
   end
