@@ -5,7 +5,6 @@ class Train
   attr_reader :speed, :id, :type, :wagons, :route
 
   @@trains = {}
-  @instances = 0
 
   def initialize(id)
     @id = id

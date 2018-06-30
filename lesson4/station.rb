@@ -4,7 +4,6 @@ class Station
   attr_reader :trains, :name
 
   @@stations = {}
-  @instances = 0
 
   def initialize(name)
     @name = name

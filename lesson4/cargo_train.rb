@@ -1,5 +1,5 @@
 class CargoTrain < Train
-  @instances = 0
+  include InstanceCounter
 
   def type
     "cargo"

@@ -23,8 +23,6 @@ class Interface
         menu_train
       when 4
         menu_station
-      when 5
-        puts Station.instances, Route.instances, Train.instances, CargoTrain.instances, PassengerTrain.instances
       else
         wrong_choise_message
       end

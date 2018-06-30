@@ -4,7 +4,6 @@ class Route
   attr_reader :stations, :id
 
   @@routes = {}
-  @instances = 0
 
   def initialize(id, departure_point, destination_point)
     @id = id

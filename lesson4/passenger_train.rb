@@ -1,5 +1,5 @@
 class PassengerTrain < Train
-  @instances = 0
+  include InstanceCounter
 
   def type
     "passenger"
