@@ -4,10 +4,13 @@ class Train
 
   attr_reader :speed, :id, :type, :wagons, :route
 
+  TRAIN_ID_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/i
+
   @@trains = {}
 
   def initialize(id)
     @id = id
+    validation!
     @wagons = []
     @speed = 0
     @@trains[id] = self
@@ -25,7 +28,6 @@ class Train
 
   def increase_speed(value)
     @speed += value
-      @wagons << wagon
   end
 
   def wagon_add(wagon)
@@ -33,7 +35,7 @@ class Train
       @wagons << wagon
       wagon.set_in_use
     else
-      "moving"
+      raise "Поезд в движении, операция невозможна."
     end
   end
 
@@ -42,9 +44,9 @@ class Train
       @wagons.delete(wagon)
       wagon.set_free
     elsif speed != 0
-      "moving"
+      raise "Поезд в движении, операция невозможна."
     else
-      "absence"
+      raise "Данного вагона нет в составе"
     end
   end
 
@@ -55,26 +57,26 @@ class Train
   end
 
   def move_next
-    return "no route" unless @route
+    raise "Маршрут не задан" unless @route
 
     if next_station
       current_station.train_departure(self)
       next_station.train_arrive(self)
       @current_station_index += 1
     else
-      "destination"
+      raise "Это конечная станция"
     end
   end
 
   def move_back
-    return "no route" unless @route
+    raise "Маршрут не задан" unless @route
 
     if previous_station
       current_station.train_departure(self)
       previous_station.train_arrive(self)
       @current_station_index -= 1
     else
-      "departure"
+      raise "Это начальная станция"
     end
   end
 
@@ -92,5 +94,18 @@ class Train
 
   def previous_station
     @route.stations[@current_station_index - 1] if @current_station_index != 0
+  end
+
+  def valid?
+    validation!
+  rescue
+    false
+  end
+
+  protected
+
+  def validation!
+    raise "Incorrect ID" if @id !~ TRAIN_ID_FORMAT
+    true
   end
 end

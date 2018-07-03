@@ -156,6 +156,8 @@ private
     else
       Station.new(name)
     end
+    rescue RuntimeError => e
+      operation_rejected_message(e)
   end
 
   def new_route
@@ -175,23 +177,35 @@ private
   end
 
   def new_cargo_train
-    request_train_id_message
-    id = gets.chomp
-    if Train.find(id)
-      id_taken_message
-    else
-      CargoTrain.new(id)
+    begin
+      request_train_id_message
+      id = gets.chomp
+      if Train.find(id)
+        id_taken_message
+      else
+        CargoTrain.new(id)
+      end
+    rescue RuntimeError
+      uncorrect_id_message
+      retry
     end
+    train_created_message(id)
   end
 
   def new_passenger_train
-    request_train_id_message
-    id = gets.chomp
-    if Train.find(id)
-      id_taken_message
-    else
-      PassengerTrain.new(id)
+    begin
+      request_train_id_message
+      id = gets.chomp
+      if Train.find(id)
+        id_taken_message
+      else
+        PassengerTrain.new(id)
+      end
+    rescue RuntimeError
+      uncorrect_id_message
+      retry
     end
+    train_created_message(id)
   end
 
   def new_wagon(id)
@@ -212,24 +226,23 @@ private
     station = get_station
     return wrong_station_name_message unless station
 
-    if route.involve?(station)
-      route_operation_cancel_message("include")
-    else
-      route.add(station)
-    end
+    raise "Маршрут уже содержит данную станцию" if route.involve?(station)
+    route.add(station)
+    rescue RuntimeError => e
+      operation_rejected_message(e)
   end
 
   def remove_station
     route = get_route
     return wrong_id_message  unless route
-
     station = get_station
     return wrong_station_name_message unless station
 
-    return route_operation_cancel_message("not include") unless route.involve?(station)
+    raise "Указанная станция не найдена в маршруте" unless route.involve?(station)
 
-    result = route.remove(station)
-    route_operation_cancel_message("can't delete") if result == "can't delete"
+    route.remove(station)
+    rescue RuntimeError => e
+      operation_rejected_message(e)
   end
 
   def show_routes
@@ -243,7 +256,6 @@ private
   def set_route
     route = get_route
     return wrong_id_message unless route
-
     train = get_train
     return wrong_id_message unless train
 
@@ -260,12 +272,13 @@ private
     unless wagon
       wagon = new_wagon(id)
     end
-
-    return wagon_operation_cancel_message("in use") if wagon.status == "in use"
-
-    result = train.wagon_add(wagon)
-    wagon_operation_cancel_message("moving") if result == "moving"
-    wagon_operation_cancel_message("type") if result == "type"
+    begin
+      raise "Вагон используется в текущий момент" if wagon.status == "in use"
+      train.wagon_add(wagon)
+    rescue RuntimeError => e
+      operation_rejected_message(e)
+    end
+    operation_success_message unless e
   end
 
   def remove_wagon
@@ -277,34 +290,32 @@ private
     wagon = get_wagon(id)
     return wrong_id_message unless wagon
 
-    result = train.wagon_remove(wagon)
-    if result == "moving"
-      wagon_operation_cancel_message("moving")
-    elsif result == "type"
-      wagon_operation_cancel_message("type")
-    elsif result == "absence"
-      wagon_operation_cancel_message("absence")
+    begin
+      train.wagon_remove(wagon)
+    rescue RuntimeError => e
+      operation_rejected_message(e)
     end
+    operation_success_message unless e
   end
 
   def move_next
     train = get_train
     return wrong_id_message unless train
 
-    result = train.move_next
+    train.move_next
 
-    route_operation_cancel_message("no route") if result == "no route"
-    route_operation_cancel_message("destination") if  result == "destination"
+    rescue RuntimeError => e
+      operation_rejected_message(e)
   end
 
   def move_back
     train = get_train
     return wrong_id_message unless train
 
-    result = train.move_back
+    train.move_back
 
-    route_operation_cancel_message("no route") if result == "no route"
-    route_operation_cancel_message("departure") if result == "departure"
+    rescue RuntimeError => e
+      operation_rejected_message(e)
   end
 
   def get_station

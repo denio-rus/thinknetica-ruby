@@ -3,10 +3,13 @@ class Route
 
   attr_reader :stations, :id
 
+  ROUTE_ID_FORMAT = /^[0-9A-Z]/i
+
   @@routes = {}
 
   def initialize(id, departure_point, destination_point)
     @id = id
+    validation!
     @stations = [departure_point, destination_point]
     register_instance
     @@routes[id] = self
@@ -22,7 +25,7 @@ class Route
 
   def remove(station)
     if [departure, destination].include?(station)
-      "can't delete"
+      raise "Эту станцию нельзя удалить из маршрута"
     else
       @stations.delete(station)
     end
@@ -46,5 +49,18 @@ class Route
 
   def self.find(id)
     @@routes[id]
+  end
+
+  def valid?
+      validation!
+    rescue
+      false
+  end
+
+  private
+
+  def validation!
+    raise "Incorrect ID" if id !~ ROUTE_ID_FORMAT
+    true
   end
 end

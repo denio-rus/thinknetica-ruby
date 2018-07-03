@@ -8,7 +8,7 @@ class PassengerTrain < Train
     if wagon.instance_of?(PassengerWagon)
       super
     else
-      "type"
+      raise "Тип вагона не соответствуют типу поезда."
     end
   end
 end

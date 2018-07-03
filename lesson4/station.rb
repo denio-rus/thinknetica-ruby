@@ -3,10 +3,13 @@ class Station
 
   attr_reader :trains, :name
 
+  NAME_FORMAT = /^[0-9A-Z]/
+
   @@stations = {}
 
   def initialize(name)
     @name = name
+    validation!
     @trains = []
     @@stations[name] = self
     register_instance
@@ -30,5 +33,18 @@ class Station
 
   def train_departure(train)
     @trains.delete(train)
+  end
+
+  def valid?
+      validation!
+    rescue
+      false
+  end
+
+  private
+
+  def validation!
+    raise "Недопустимое имя." if @name !~ NAME_FORMAT
+    true
   end
 end

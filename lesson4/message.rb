@@ -1,5 +1,22 @@
 module Message
 
+  def operation_success_message
+    puts "Операция выполнена"
+  end
+
+  def operation_rejected_message(e)
+    puts e.message
+    puts "Операция не выполнена"
+  end
+
+  def train_created_message(id)
+    puts "Поезд #{id} создан."
+  end
+
+  def uncorrect_id_message
+    puts "Введен некорректный ID"
+  end
+
   def wrong_choise_message
     puts "Нет такого варианта"
   end
@@ -9,7 +26,7 @@ module Message
   end
 
   def request_train_id_message
-    print "Введите идентификатор поезда: "
+    print "Введите идентификатор поезда (***-**, где * - цифра или символ a-z, дефис опционален): "
   end
 
   def request_wagon_id_message
@@ -46,36 +63,6 @@ module Message
 
   def request_wagon_type_message
     puts "Выберите тип вагона (1 - cargo, 2 - passenger): "
-  end
-
-   def wagon_operation_cancel_message(error)
-    case error
-    when "type"
-      puts "Тип вагона не соответствуют типу поезда"
-    when "moving"
-      puts "Поезд в движении, операция невозможна."
-    when "absence"
-      puts "Данного вагона нет в составе"
-    when "in use"
-      puts "Вагон используется в текущий момент"
-    end
-  end
-
-  def route_operation_cancel_message(error)
-    case error
-    when "no route"
-      puts "Маршрут не задан"
-    when "departure"
-      puts "Это начальная станция"
-    when "destination"
-      puts "Это конечная станция"
-    when "include"
-      puts "Маршрут уже содержит данную станцию"
-    when "not include"
-      puts "Указанная станция не найдена в маршруте"
-    when "can't delete"
-      puts "Эту станцию нельзя удалить из маршрута"
-    end
   end
 
   def trains_at(station)
