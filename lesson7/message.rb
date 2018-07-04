@@ -17,10 +17,6 @@ module Message
     puts "Нет такого варианта"
   end
 
-  def id_taken_message
-    puts "Идентификатор уже используется"
-  end
-
   def request_train_id_message
     print "Введите идентификатор поезда (***-**, где * - цифра или символ a-z, дефис опционален): "
   end
@@ -45,9 +41,6 @@ module Message
     puts "Введена несуществующая станция"
   end
 
-  def station_name_taken_message
-    puts "Это название уже используется"
-  end
 
   def route_detalization_message
     Route.all.each_pair do |id, route|

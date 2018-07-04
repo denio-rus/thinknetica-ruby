@@ -12,6 +12,7 @@ class Train
   def initialize(id)
     @id = id
     validate!
+    is_free?(id) # использую отдельно от validate!, чтобы метод valid? работал
     @wagons = []
     @speed = 0
     @@trains[id] = self

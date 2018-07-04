@@ -1,6 +1,5 @@
 class Interface
   include Message
-  include ValidationMethods
 
   def main_menu
     loop do
@@ -152,11 +151,8 @@ private
   def new_station
     request_station_name_message
     name = gets.chomp.capitalize
-    if Station.find(name)
-      station_name_taken_message
-    else
-      Station.new(name)
-    end
+    Station.new(name)
+    operation_success_message
   rescue RuntimeError => e
       operation_rejected_message(e)
   end
@@ -164,7 +160,6 @@ private
   def new_route
     request_route_id_message
     id = gets.chomp
-    return id_taken_message if Route.find(id)
 
     print "Ввод станции отправления. "
     departure = get_station
@@ -175,32 +170,29 @@ private
     return wrong_station_name_message unless destination
 
     Route.new(id, departure, destination)
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
   end
 
   def new_cargo_train
-  begin
     request_train_id_message
     id = gets.chomp
-    CargoTrain.new(id) if train_id_free?(id)
+    CargoTrain.new(id)
+    train_created_message(id)
   rescue RuntimeError => e
     operation_rejected_message(e)
     retry
-  end
-    train_created_message(id) unless e
   end
 
   def new_passenger_train
-  begin
     request_train_id_message
     id = gets.chomp
-    PassengerTrain.new(id) if train_id_free?(id)
+    PassengerTrain.new(id)
+    train_created_message(id)
   rescue RuntimeError => e
     operation_rejected_message(e)
     retry
-  end
-    train_created_message(id) unless e
   end
 
   def new_wagon(id)
@@ -213,6 +205,8 @@ private
     else
       wrong_choise_message
     end
+  rescue RuntimeError => e
+    operation_rejected_message(e)
   end
 
   def add_station
@@ -222,6 +216,7 @@ private
     return wrong_station_name_message unless station
 
     route.add(station)
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
   end
@@ -233,6 +228,7 @@ private
     return wrong_station_name_message unless station
 
     route.remove(station)
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
   end
@@ -252,6 +248,7 @@ private
     return wrong_id_message unless train
 
     train.take_route(route)
+    operation_success_message
   end
 
   def add_wagon
@@ -264,12 +261,10 @@ private
     unless wagon
       wagon = new_wagon(id)
     end
-  begin
     train.wagon_add(wagon)
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
-  end
-    operation_success_message unless e
   end
 
   def remove_wagon
@@ -281,12 +276,10 @@ private
     wagon = get_wagon(id)
     return wrong_id_message unless wagon
 
-  begin
     train.wagon_remove(wagon)
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
-  end
-    operation_success_message unless e
   end
 
   def move_next
@@ -294,7 +287,7 @@ private
     return wrong_id_message unless train
 
     train.move_next
-
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
   end
@@ -304,7 +297,7 @@ private
     return wrong_id_message unless train
 
     train.move_back
-
+    operation_success_message
   rescue RuntimeError => e
     operation_rejected_message(e)
   end

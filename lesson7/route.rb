@@ -12,6 +12,7 @@ class Route
     @id = id
     @stations = [departure_point, destination_point]
     validate!
+    is_free?(id)
     register_instance
     @@routes[id] = self
   end

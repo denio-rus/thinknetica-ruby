@@ -13,6 +13,7 @@ class Station
   def initialize(name)
     @name = name
     validate!
+    is_free?(name)
     @trains = []
     @@stations[name] = self
     register_instance

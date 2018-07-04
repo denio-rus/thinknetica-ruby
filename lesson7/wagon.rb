@@ -1,5 +1,6 @@
 class Wagon
   include Production
+  include ValidationMethods
 
   attr_reader :id, :status
 
@@ -8,6 +9,7 @@ class Wagon
   def initialize(id)
     @id = id
     validate!
+    is_free?(id)
     @status = "free"
     @@wagons << self
   end
@@ -24,10 +26,9 @@ class Wagon
     @status = "in use"
   end
 
-  private
+  protected
 
   def validate!
     raise "Blank input" if @id == nil
   end
-
 end
