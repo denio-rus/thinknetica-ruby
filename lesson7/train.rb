@@ -12,7 +12,6 @@ class Train
   def initialize(id)
     @id = id
     validate!
-    is_free?(id) # использую отдельно от validate!, чтобы метод valid? работал
     @wagons = []
     @speed = 0
     @@trains[id] = self
@@ -106,5 +105,6 @@ class Train
     raise "Blank input" if @id == nil
     raise "Argument type error" unless @id.instance_of? String
     raise "Incorrect ID" if @id !~ TRAIN_ID_FORMAT
+    validate_uniqueness_of(@id)
   end
 end

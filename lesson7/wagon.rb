@@ -9,7 +9,6 @@ class Wagon
   def initialize(id)
     @id = id
     validate!
-    is_free?(id)
     @status = "free"
     @@wagons << self
   end
@@ -30,5 +29,6 @@ class Wagon
 
   def validate!
     raise "Blank input" if @id == nil
+    validate_uniqueness_of(@id)
   end
 end

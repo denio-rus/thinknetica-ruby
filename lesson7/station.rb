@@ -13,7 +13,6 @@ class Station
   def initialize(name)
     @name = name
     validate!
-    is_free?(name)
     @trains = []
     @@stations[name] = self
     register_instance
@@ -47,5 +46,6 @@ class Station
     raise "Blank input" if @name == nil
     raise "Argument type error" unless @name.instance_of? String
     raise "Недопустимое имя." if @name !~ NAME_FORMAT
+    validate_uniqueness_of(@name)
   end
 end

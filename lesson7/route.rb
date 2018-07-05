@@ -12,7 +12,6 @@ class Route
     @id = id
     @stations = [departure_point, destination_point]
     validate!
-    is_free?(id)
     register_instance
     @@routes[id] = self
   end
@@ -61,5 +60,6 @@ class Route
     raise "Blank input" if id == nil
     raise "Argument type error" unless id.instance_of? String
     raise "Incorrect ID" if id !~ ROUTE_ID_FORMAT
+    validate_uniqueness_of(@id)
   end
 end

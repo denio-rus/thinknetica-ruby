@@ -1,7 +1,6 @@
 module ValidationMethods
 
   WRONG_OBJECT_MESSAGE = "Передан объект неподходящего класса"
-  ID_TAKEN_MESSAGE = "Идентификатор уже используется"
 
   def valid?
     validate!
@@ -18,7 +17,7 @@ module ValidationMethods
     raise WRONG_OBJECT_MESSAGE unless object.is_a? Train
   end
 
-  def is_free?(id)
-    raise ID_TAKEN_MESSAGE if self.class.find(id)
+  def validate_uniqueness_of (attribute)
+    raise "Атрибут #{attribute} уже использован" if self.class.find(attribute)
   end
 end
