@@ -18,6 +18,7 @@ module ValidationMethods
   end
 
   def validate_uniqueness_of (attribute)
-    raise "Атрибут #{attribute} уже использован" if self.class.find(attribute)
+    existent_object = self.class.find(attribute)
+    raise "Атрибут #{attribute} уже использован" if existent_object && existent_object != self
   end
 end
