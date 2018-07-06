@@ -1,0 +1,55 @@
+class Station
+  include InstanceCounter
+  include ValidationMethods
+
+  attr_reader :trains, :name
+
+   NAME_FORMAT = /^[0-9A-Z]{1}[0-9a-z]{1,}/
+
+  @@stations = {}
+
+  def initialize(name)
+    @name = name
+    validate!
+    @trains = []
+    @@stations[name] = self
+    register_instance
+  end
+
+  def self.all
+    @@stations
+  end
+
+  def self.find(name)
+    @@stations[name]
+  end
+
+  def trains_by_type(type)
+    @trains.count { |train| train.type == type }
+  end
+
+  def train_arrive(train)
+    validate_train(train)
+    @trains << train
+  end
+
+  def train_departure(train)
+    validate_train(train)
+    @trains.delete(train)
+  end
+
+  def each_train(&block)
+    @trains.each do |train|
+      yield(train) if block_given?
+    end
+  end
+
+  private
+
+  def validate!
+    raise "Blank input" if @name == nil
+    raise "Argument type error" unless @name.instance_of? String
+    raise "Недопустимое имя." if @name !~ NAME_FORMAT
+    validate_uniqueness_of(@name)
+  end
+end
