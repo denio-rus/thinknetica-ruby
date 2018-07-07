@@ -36,7 +36,8 @@ class Train
   end
 
   def wagon_add(wagon)
-     raise "Вагон используется в текущий момент" if wagon.status == "in use"
+    validate_object(wagon, Wagon)
+    raise "Вагон используется в текущий момент" if wagon.status == "in use"
     if speed == 0
       @wagons << wagon
       wagon.set_in_use
@@ -46,7 +47,7 @@ class Train
   end
 
   def wagon_remove(wagon)
-      if speed == 0 && @wagons.include?(wagon)
+    if speed == 0 && @wagons.include?(wagon)
       @wagons.delete(wagon)
       wagon.set_free
     elsif speed != 0
@@ -103,7 +104,7 @@ class Train
     @route.stations[@current_station_index - 1] if @current_station_index != 0
   end
 
-  def each_wagon(&block)
+  def each_wagon
     @wagons.each do |wagon|
       yield(wagon) if block_given?
     end
@@ -112,7 +113,6 @@ class Train
   protected
 
   def validate!
-    raise "Blank input" if @id == nil
     raise "Argument type error" unless @id.instance_of? String
     raise "Incorrect ID" if @id !~ TRAIN_ID_FORMAT
     validate_uniqueness_of(@id)

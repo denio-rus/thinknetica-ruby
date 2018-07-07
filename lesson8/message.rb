@@ -70,8 +70,8 @@ module Message
     puts "Поезд состоит из #{train.number_of_wagons} вагонов:"
     train.each_wagon do |wagon|
       print "Вагон номер - #{wagon.id}, тип - #{wagon.type}. "
-      puts "Свободный объем - #{wagon.free_volume}, занятый объем - #{wagon.taken_volume}." if wagon.type == "cargo"
-      puts "Свободно мест - #{wagon.free_seats}, занято мест - #{wagon.taken_seats}." if wagon.type == "passenger"
+      puts "Свободный объем - #{wagon.free_capacity}, занятый объем - #{wagon.capacity_in_use}." if wagon.type == "cargo"
+      puts "Свободно мест - #{wagon.free_capacity}, занято мест - #{wagon.capacity_in_use}." if wagon.type == "passenger"
     end
   end
 

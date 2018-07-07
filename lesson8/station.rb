@@ -29,7 +29,7 @@ class Station
   end
 
   def train_arrive(train)
-    validate_train(train)
+    validate_object(train, Train)
     @trains << train
   end
 
@@ -38,7 +38,7 @@ class Station
     @trains.delete(train)
   end
 
-  def each_train(&block)
+  def each_train
     @trains.each do |train|
       yield(train) if block_given?
     end
@@ -47,7 +47,6 @@ class Station
   private
 
   def validate!
-    raise "Blank input" if @name == nil
     raise "Argument type error" unless @name.instance_of? String
     raise "Недопустимое имя." if @name !~ NAME_FORMAT
     validate_uniqueness_of(@name)

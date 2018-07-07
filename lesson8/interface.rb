@@ -358,9 +358,9 @@ private
     if wagon.type == "cargo"
       request_loading_volume
       volume = gets.to_f
-      wagon.take_cargo(volume)
+      wagon.load_item(volume)
     else
-      wagon.take_passenger
+      wagon.load_item
     end
     operation_success_message
   rescue RuntimeError => e

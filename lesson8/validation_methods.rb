@@ -9,12 +9,8 @@ module ValidationMethods
     false
   end
 
-  def validate_object(object, expected_class)
-    raise  WRONG_OBJECT_MESSAGE unless object.instance_of?(expected_class)
-  end
-
-  def validate_train(object)
-    raise WRONG_OBJECT_MESSAGE unless object.is_a? Train
+  def validate_object(object, klass)
+    raise  WRONG_OBJECT_MESSAGE unless object.is_a?(klass)
   end
 
   def validate_uniqueness_of (attribute)
