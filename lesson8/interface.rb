@@ -30,6 +30,7 @@ class Interface
   end
 
   def start
+    seeds
     main_menu
   end
 
@@ -366,5 +367,16 @@ private
   rescue RuntimeError => e
     operation_rejected_message(e)
     retry
+  end
+
+  def seeds
+    a = Station.new("Bos")
+    b = Station.new("Los")
+    c = Station.new("Ny")
+
+    CargoTrain.new("11111")
+    PassengerTrain.new("22222")
+
+    Route.new("r1", a, b)
   end
 end

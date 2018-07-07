@@ -1,8 +1,8 @@
 class PassengerWagon < Wagon
 
-  def load_item(volume = 1)
-    volume = 1 # может это излишне, но в задании сказано точно "по одному""
-    super
+  def load_item
+    raise "Превышена вместимость вагона" if capacity_in_use == capacity
+    @capacity_in_use += 1
   end
 
   def type
