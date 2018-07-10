@@ -3,16 +3,8 @@ class Interface
 
   def main_menu
     loop do
-      puts '9. Выход из программы'
-      puts '1. Добавить объект'
-      puts '2. Операции с маршрутами'
-      puts '3. Операции с поездами'
-      puts '4. Информация о станциях'
-      print 'Введите номер операции: '
-
+      main_menu_message
       input = gets.to_i
-
-      break if input == 9
 
       case input
       when 1
@@ -23,6 +15,8 @@ class Interface
         menu_train
       when 4
         menu_station
+      when 9
+        break
       else
         wrong_choise_message
       end
@@ -39,16 +33,8 @@ class Interface
 
   def menu_create
     loop do
-      puts '9. Назад в главное меню'
-      puts '1. Создать станцию'
-      puts '2. Создать маршрут'
-      puts '3. Создать грузовой поезд'
-      puts '4. Создать пассажирский поезд'
-      print 'Введите номер операции: '
-
+      menu_create_message
       input = gets.to_i
-
-      break if input == 9
 
       case input
       when 1
@@ -59,6 +45,8 @@ class Interface
         new_cargo_train
       when 4
         new_passenger_train
+      when 9
+        break
       else
         wrong_choise_message
       end
@@ -67,17 +55,8 @@ class Interface
 
   def menu_route
     loop do
-      puts '9. Назад в главное меню'
-      puts '1. Добавить станцию в маршрут'
-      puts '2. Удалить станцию из маршрута'
-      puts '3. Назначить маршрут поезду'
-      puts '4. Вывести имеющиеся маршруты'
-      puts '5. Вывести имеющиеся станции'
-      print 'Введите номер операции: '
-
+      menu_route_message
       input = gets.to_i
-
-      break if input == 9
 
       case input
       when 1
@@ -90,6 +69,8 @@ class Interface
         show_routes
       when 5
         show_stations
+      when 9
+        break
       else
         wrong_choise_message
       end
@@ -98,19 +79,8 @@ class Interface
 
   def menu_train
     loop do
-      puts '9. Назад в главное меню.'
-      puts '1. Добавить вагон к поезду.'
-      puts '2. Отцепить вагон от поезда.'
-      puts '3. Движение поезда на следующую станцию маршрута.'
-      puts '4. Движение поезда на предыдущую станцию маршрута.'
-      puts '5. Вывести существующие поезда на экран.'
-      puts '6. Детальная информация о поезде.'
-      puts '7. Добавить груз или пассажира в вагон.'
-      print 'Введите номер операции: '
-
+      menu_train_message
       input = gets.to_i
-
-      break if input == 9
 
       case input
       when 1
@@ -127,6 +97,8 @@ class Interface
         detail_train
       when 7
         load_wagon
+      when 9
+        break
       else
         wrong_choise_message
       end
@@ -135,20 +107,16 @@ class Interface
 
   def menu_station
     loop do
-      puts '9. Назад в главное меню.'
-      puts '1. Показать список станций.'
-      puts '2. Список поездов на станции'
-      print 'Введите номер операции: '
-
+      menu_station_message
       input = gets.to_i
-
-      break if input == 9
 
       case input
       when 1
         show_stations
       when 2
         list_train
+      when 9
+        break
       else
         wrong_choise_message
       end
@@ -206,19 +174,28 @@ class Interface
     request_wagon_type_message
     input = gets.to_i
     if input == 1
-      request_cargo_volume
-      cargo_volume = gets.to_f
-      CargoWagon.new(id, cargo_volume)
+      new_cargo_wagon(id)
     elsif input == 2
-      request_number_of_seats
-      seats = gets.to_i
-      PassengerWagon.new(id, seats)
+      new_passenger_wagon(id)
     else
       wrong_choise_message
     end
+  end
+
+  def new_cargo_wagon(id)
+    request_cargo_volume
+    cargo_volume = gets.to_f
+    CargoWagon.new(id, cargo_volume)
   rescue RuntimeError => e
     operation_rejected_message(e)
-    retry
+  end
+
+  def new_passenger_wagon(id)
+    request_number_of_seats
+    seats = gets.to_i
+    PassengerWagon.new(id, seats)
+  rescue RuntimeError => e
+    operation_rejected_message(e)
   end
 
   def add_station
@@ -370,11 +347,11 @@ class Interface
   def seeds
     a = Station.new('Bos')
     b = Station.new('Los')
-    c = Station.new('Ny')
 
     CargoTrain.new('11111')
     PassengerTrain.new('22222')
 
     Route.new('r1', a, b)
+
   end
 end
