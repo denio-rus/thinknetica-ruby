@@ -6,23 +6,25 @@ class Wagon
 
   attr_reader :id, :status, :capacity, :capacity_in_use
 
+  @@wagons = []
+
+  validate :id, :presense
+  validate :id, :format, WAGON_ID_FORMAT
+  validate :id, :uniqueness
+  validate :capacity, :type, Numeric
+
   def self.find(id)
     @@wagons.find { |wagon| wagon.id == id }
   end
 
-  @@wagons = []
+
 
   def initialize(id, capacity)
     @id = id
     @capacity = capacity
     @capacity_in_use = 0
-    validate! do
-      self.class.validate @id, :presense
-      self.class.validate @id, :format, WAGON_ID_FORMAT
-      self.class.validate @capacity, :type, Numeric
-      raise 'Указана некорректная грузоподъемность' if @capacity <= 0
-      validate_uniqueness_of(@id)
-    end
+    validate!
+    raise 'Указана некорректная грузоподъемность' if @capacity <= 0
     @status = 'free'
     @@wagons << self
   end
@@ -40,7 +42,7 @@ class Wagon
   end
 
   def load_item(volume)
-    raise 'Argument type error' unless volume.is_a? Numeric
+    validate_type(volume, Numeric)
     raise 'Задан отрицательный объем' if volume < 0
     raise 'Превышена вместимость вагона' if capacity_in_use + volume > capacity
     @capacity_in_use += volume

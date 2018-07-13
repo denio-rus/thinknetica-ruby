@@ -5,19 +5,30 @@ module Validation
   end
 
   module ClassMethods
-    def validate(attribute, validation_type, optional = 'none')
-      case validation_type
-      when :presense
-        raise "#{attribute} doesn't present" if attribute.nil? && attribute.empty?
-      when :format
-        raise "#{attribute} doesn't match format #{optional}" if attribute.to_s !~ optional
-      when :type
-        raise "#{attribute} is not #{optional}" unless attribute.is_a?(optional)
-      end
+    def validate(*args)
+      @validations ||= []
+      @validations << args
+    end
+
+    def validations
+      @validations
     end
   end
 
   module InstanceMethods
+    def validate!
+      self.class.validations.each do |validation|
+        method = "validate_#{validation[1]}".to_sym
+        attribute = send(validation[0])
+        parameter = validation[2]
+        if parameter
+          send(method, attribute, parameter)
+        else
+          send(method, attribute)
+        end
+      end
+    end
+
     def valid?
       validate!
       true
@@ -25,18 +36,21 @@ module Validation
       false
     end
 
-    def validate_uniqueness_of(attribute)
+    def validate_uniqueness(attribute)
       existent_object = self.class.find(attribute)
       raise "Атрибут #{attribute} уже использован" if existent_object && existent_object != self
     end
 
-    private
+    def validate_presense(attribute)
+      raise "#{attribute} doesn't present" if attribute.nil? || attribute.empty?
+    end
 
-    def validate!
-      yield if block_given?
-    rescue RuntimeError => e
-      puts e.message
-      raise
+    def validate_format(attribute, regexp)
+      raise "#{attribute} doesn't match format #{regexp}" if attribute.to_s !~ regexp
+    end
+
+    def validate_type(attribute, klass)
+      raise "not #{klass}" unless attribute.is_a?(klass)
     end
   end
 end

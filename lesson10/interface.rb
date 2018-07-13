@@ -331,7 +331,7 @@ class Interface
     wagon = get_wagon(id)
     return wrong_id_message unless wagon
 
-    if wagon.type == 'cargo'
+    if wagon.wagon_type == 'cargo'
       request_loading_volume
       volume = gets.to_f
       wagon.load_item(volume)

@@ -117,11 +117,11 @@ module Message
   def train_detalization(train)
     puts "Поезд состоит из #{train.number_of_wagons} вагонов:"
     train.each_wagon do |wagon|
-      print "Вагон номер - #{wagon.id}, тип - #{wagon.type}. "
-      if wagon.type == 'cargo'
+      print "Вагон номер - #{wagon.id}, тип - #{wagon.wagon_type}. "
+      if wagon.wagon_type == 'cargo'
         puts "Свободный объем - #{wagon.free_capacity}, занятый объем" \
              " - #{wagon.capacity_in_use}."
-      elsif wagon.type == 'passenger'
+      elsif wagon.wagon_type == 'passenger'
         puts "Свободно мест - #{wagon.free_capacity}, занято мест" \
              " - #{wagon.capacity_in_use}."
       end

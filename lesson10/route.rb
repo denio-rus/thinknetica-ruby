@@ -8,6 +8,12 @@ class Route
 
   @@routes = {}
 
+  validate :id, :presense
+  validate :id, :format, ROUTE_ID_FORMAT
+  validate :id, :uniqueness
+  validate :departure, :type, Station
+  validate :destination, :type, Station
+
   def self.all
     @@routes
   end
@@ -19,20 +25,14 @@ class Route
   def initialize(id, departure_point, destination_point)
     @id = id
     @stations = [departure_point, destination_point]
-    validate! do
-      self.class.validate @id, :presense
-      self.class.validate @id, :format, ROUTE_ID_FORMAT
-      self.class.validate departure_point, :type, Station
-      self.class.validate destination_point, :type, Station
-      raise 'Станция отправления и станция назначения совпадают' if destination == departure
-      validate_uniqueness_of(@id)
-    end
+    validate!
+    raise 'Станция отправления и станция назначения совпадают' if destination == departure
     register_instance
     @@routes[id] = self
   end
 
   def add(station)
-    self.class.validate(station, :type, Station)
+    validate_type(station, Station)
     raise 'Маршрут уже содержит данную станцию' if @stations.include?(station)
     @stations.insert(-2, station)
   end

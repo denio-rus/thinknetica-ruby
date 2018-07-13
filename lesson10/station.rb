@@ -8,6 +8,10 @@ class Station
 
   @@stations = {}
 
+  validate :name, :presense
+  validate :name, :format, NAME_FORMAT
+  validate :name, :uniqueness
+
   def self.all
     @@stations
   end
@@ -18,11 +22,7 @@ class Station
 
   def initialize(name)
     @name = name
-    validate! do
-      self.class.validate(@name, :presense)
-      self.class.validate(@name, :format, NAME_FORMAT)
-      validate_uniqueness_of(@name)
-    end
+    validate!
     @trains = []
     @@stations[name] = self
     register_instance
@@ -33,7 +33,7 @@ class Station
   end
 
   def train_arrive(train)
-    self.class.validate(train, :type, Train)
+    validate_type(train, Train)
     @trains << train
   end
 

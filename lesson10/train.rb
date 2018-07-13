@@ -9,6 +9,10 @@ class Train
 
   @@trains = {}
 
+  validate :id, :presense
+  validate :id, :format, TRAIN_ID_FORMAT
+  validate :id, :uniqueness
+
   def self.all
     @@trains
   end
@@ -19,11 +23,7 @@ class Train
 
   def initialize(id)
     @id = id
-    validate! do
-      self.class.validate @id, :presense
-      self.class.validate @id, :format, TRAIN_ID_FORMAT
-      validate_uniqueness_of(@name)
-    end
+    validate!
     @wagons = []
     @speed = 0
     @@trains[id] = self
@@ -44,7 +44,7 @@ class Train
   end
 
   def wagon_add(wagon)
-    self.class.validate(wagon, :type, Wagon)
+    validate_type(wagon, Wagon)
     raise 'Вагон используется в текущий момент' if wagon.status == 'in use'
     raise 'Поезд в движении, операция невозможна.' unless speed.zero?
     @wagons << wagon
@@ -63,7 +63,7 @@ class Train
   end
 
   def take_route(route)
-    self.class.validate(route, :type, Route)
+    validate_type(route, Route)
     @route = route
     @current_station_index = 0
     @route.stations.first.train_arrive(self)
