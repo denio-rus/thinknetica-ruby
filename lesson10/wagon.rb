@@ -1,6 +1,7 @@
 class Wagon
   include Production
   include Validation
+  extend Accessors
 
   WAGON_ID_FORMAT = /^[0-9A-Z]/i
 
@@ -42,9 +43,10 @@ class Wagon
   end
 
   def load_item(volume)
-    validate_type(volume, Numeric)
     raise 'Задан отрицательный объем' if volume < 0
     raise 'Превышена вместимость вагона' if capacity_in_use + volume > capacity
-    @capacity_in_use += volume
+    self.capacity_in_use += volume
   end
+  protected
+  strong_attr_writer :capacity_in_use, Numeric
 end

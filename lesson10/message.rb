@@ -43,6 +43,7 @@ module Message
     puts '9. Назад в главное меню.'
     puts '1. Показать список станций.'
     puts '2. Список поездов на станции'
+    puts '3. Максимальная загруженность станции.'
     print 'Введите номер операции: '
   end
 
@@ -130,5 +131,9 @@ module Message
 
   def request_loading_volume
     puts 'Введите объем загружаемого груза: '
+  end
+
+  def station_max_occupancy_message(station,number)
+    puts "Максимальная загруженность станции #{station.name} составляет #{number} поезда(ов)."
   end
 end

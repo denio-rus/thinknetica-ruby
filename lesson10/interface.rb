@@ -115,6 +115,8 @@ class Interface
         show_stations
       when 2
         list_train
+      when 3
+        station_max_occupancy
       when 9
         break
       else
@@ -342,6 +344,12 @@ class Interface
   rescue RuntimeError => e
     operation_rejected_message(e)
     retry
+  end
+
+  def station_max_occupancy
+    station = get_station
+    number = station.max_number_of_trains
+    station_max_occupancy_message(station, number)
   end
 
   def seeds

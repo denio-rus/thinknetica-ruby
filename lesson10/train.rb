@@ -2,6 +2,7 @@ class Train
   include Production
   include InstanceCounter
   include Validation
+  extend Accessors
 
   TRAIN_ID_FORMAT = /^[0-9a-z]{3}-?[0-9a-z]{2}$/i
 
@@ -35,12 +36,12 @@ class Train
   end
 
   def decrease_speed(value)
-    @speed -= value
-    @speed = 0 if speed < 0
+    self.speed -= value
+    self.speed = 0 if speed < 0
   end
 
   def increase_speed(value)
-    @speed += value
+    self.speed += value
   end
 
   def wagon_add(wagon)
@@ -102,4 +103,7 @@ class Train
       yield(wagon) if block_given?
     end
   end
+
+  private
+  strong_attr_writer(:speed, Numeric)
 end

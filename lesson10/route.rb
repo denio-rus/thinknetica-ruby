@@ -1,6 +1,7 @@
 class Route
   include InstanceCounter
   include Validation
+  extend Accessors
 
   ROUTE_ID_FORMAT = /^[0-9A-Z]/i
 
