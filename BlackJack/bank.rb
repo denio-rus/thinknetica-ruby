@@ -4,7 +4,7 @@ class Bank
   def initialize
     @player_money = 100
     @dealer_money = 100
-    @bet_size = 50
+    @bet_size = 10
     @game_bank = 0
   end
 
